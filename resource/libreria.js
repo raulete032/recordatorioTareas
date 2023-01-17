@@ -494,6 +494,7 @@ function generaMesCalendario(fecha){
     tbody= creaNodo("tbody");
 
     let mesActual= fecha.getMonth();
+    let anoActual= fecha.getFullYear();
 
     //Me voy al día 01-xx-aaaa
     let fecha1Mes= new Date(fecha.setDate(fecha.getDate()-(fecha.getDate()-1)));
@@ -540,13 +541,27 @@ function generaMesCalendario(fecha){
     let tds= tbody.getElementsByTagName('td');
 
     let sw=true;
-    for(let i=0;i<42 && sw;i++){ //como máximo dará 31 vueltas
+    for(let i=0;i<42 && sw;i++){ //como máximo dará 42 vueltas
+        tds[i].setAttribute("data-bs-toggle", "modal");
+        tds[i].setAttribute("data-bs-target", "#eventoModal");
 
         if(primerDiaMesSemana==i){
 
             let dia= fecha1Mes.getDate();
             dia= creaNodo("p", dia);
             tds[i-1].appendChild(dia);
+
+            let hoy= new Date();
+            let diaHoy= hoy.getDate();
+            let mesHoy= hoy.getMonth();
+            let anoHoy= hoy.getFullYear();
+
+            if(dia.textContent==diaHoy && mesHoy==mesActual && anoHoy==anoActual)
+                tds[i-1].className= "hoy";
+
+            
+            tds[i-1].addEventListener('click', anadeEvento);
+            
 
             primerDiaMesSemana++; //a partir de aquí ya van a la par
             fecha1Mes= new Date(fecha1Mes.setDate(fecha1Mes.getDate()+1)); //le sumo un día
@@ -557,6 +572,7 @@ function generaMesCalendario(fecha){
                 sw=false;
         }
     }
+
 
     return tbody;
 }

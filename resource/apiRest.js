@@ -10,7 +10,7 @@ function API_autorization(username, token) {
     let obj={
             controlador:"Token",
             metodo:"compruebaToken",
-            user: username,
+            idNick: username,
             token: token
     }
 

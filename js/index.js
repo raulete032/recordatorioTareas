@@ -1,58 +1,123 @@
+var headers= new Headers();
+    headers.append("Content-type", "application/json");
 
-
-const meses= ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
-
-var fecha= new Date();
-
-let spanPrev= creaNodo("span");
-    spanPrev.className= "col-4 fa-solid fa-angle-left";
-    spanPrev.addEventListener('click', prevMonth);
-let mes= creaNodo("span", meses[fecha.getMonth()] + " " + fecha.getFullYear());
-    mes.className= "col-4 titulo-mes";
-let spanNext= creaNodo("span");
-    spanNext.className= "col-4 fa-solid fa-angle-right"; 
-    spanNext.addEventListener('click', nextMonth)
-
-let legend= document.querySelector("#mes");
-
-legend.appendChild(spanPrev);
-legend.appendChild(mes);
-legend.appendChild(spanNext);
-
-
-
-let tbody= generaMesCalendario(fecha);
-document.getElementsByClassName("table")[0].appendChild(tbody);
+//**AddEventListener */
+document.getElementById('btnRegistrarse').addEventListener('click', registrarse);
+document.getElementById('btnIniciarSesion').addEventListener('click', iniciarSesion);
 
 
 
 
+function registrarse(){
+    document.getElementById('errorRegistro').innerHTML="";
+
+    let nick= document.getElementById('signNick').value;
+    let pass= document.getElementById('signPass').value;
+    let pass2= document.getElementById('signPass2').value;
+    let email= document.getElementById('signEmail').value;
+    var obj={
+            controlador: "Usuarios",
+            metodo: "comprueba"
+    };
+
+    if((pass === pass2) && nick!="" && pass!="" && email!=""){ //las pass soon iguales, el nick, la pass y el email NO están vacíos
+        obj.nick= nick;
+        obj.pass= pass;
+        obj.email= email;
 
 
-function prevMonth(){
-
-    let fecha= new Date(JSON.parse(dameCookie("fecha")));
-
-    fecha= new Date(fecha.setMonth(fecha.getMonth()-1));
-
-    creaCookie("fecha", JSON.stringify(fecha));
-
-    document.getElementsByClassName("table")[0].appendChild(generaMesCalendario(fecha));
-
-    document.getElementsByClassName('titulo-mes')[0].textContent= meses[fecha.getMonth()] + " " + fecha.getFullYear();
+        llamada_fetch(obj, "POST", headers)
+            .then(function(data){
+                if(data.datos.sResultado=="OK"){//puedo registrarlo
+                    obj.metodo= "registra";
+                    llamada_fetch(obj, "POST", headers)
+                        .then(function(data){
+                            if(data.datos.sResultado=="OK")
+                                document.getElementById('errorRegistro').innerHTML="Registrado correctamente";
+                                vaciaFormRegistro();
+                                borraMensaje();
+                        })
+                }
+                else{
+                    document.getElementById('errorRegistro').innerHTML="Ese nick ya está en uso";
+                }
+            })
+    }
+    else{
+        let error= document.getElementById('errorRegistro');
+        if(pass!=pass2 && pass!="")
+            error.innerHTML+= "Las contraseñas no coinciden<br>";
+        if(nick=="")
+            error.innerHTML+= "Debes introducir un nick<br>";
+        if(pass=="")
+            error.innerHTML+= "Debes introducir una contraseña<br>";
+        if(email=="")
+            error.innerHTML+= "Debes introducir un email";
+    }
 }
 
 
-function nextMonth(){
-    let fecha= new Date(JSON.parse(dameCookie("fecha")));
-
-    fecha= new Date(fecha.setMonth(fecha.getMonth()+1));
-
-    creaCookie("fecha", JSON.stringify(fecha));
-
-    document.getElementsByClassName("table")[0].appendChild(generaMesCalendario(fecha));
-
-    document.getElementsByClassName('titulo-mes')[0].textContent= meses[fecha.getMonth()] + " " + fecha.getFullYear();
 
 
+
+function iniciarSesion(){
+
+    let nick= document.getElementById('logNick').value;
+    let pass= document.getElementById('logPass').value;
+
+    var obj={
+        controlador: "Usuarios",
+        metodo: "iniciaSesion"
+    };
+
+    if(nick!="" && pass!=""){
+        obj.nick= nick;
+        obj.pass= pass;
+        llamada_fetch(obj, "POST", headers)
+            .then(function(data){
+                if(data.datos.sResultado=="OK"){
+                    let idNick= data.datos.oResultado[0].id_nick;
+                    let userName= data.datos.oResultado[0].nick;
+                    creaCookie("userName", userName);
+                    obj.controlador="Token";
+                    obj.metodo="creaToken";
+                    obj.idNick=idNick;
+
+                    llamada_fetch(obj, "POST", headers)
+                        .then(function(data){
+                            if(data.datos.sResultado=="OK"){
+                                creaCookie("token", data.datos.oResultado);
+                                creaCookie("sesion", obj.idNick);
+                                window.location.href= window.location.origin+"/html/calendario.html";
+                            }
+                        })
+                }
+                else{
+                    document.getElementById('errorInicioSesion').innerHTML= data.datos.sError;
+                }
+            })
+    }
+    else
+        document.getElementById('errorInicioSesion').innerHTML="Debes introducir el nick y la contraseña";
+}
+
+ 
+
+
+
+
+
+function vaciaFormRegistro(){
+    document.getElementById('signNick').value='';
+    document.getElementById('signPass').value='';
+    document.getElementById('signPass2').value='';
+    document.getElementById('signEmail').value='';
+}
+
+
+
+function borraMensaje(){
+    setTimeout(()=>{
+        document.getElementById('errorRegistro').innerHTML="";
+    }, 5000);
 }
