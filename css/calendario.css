@@ -7,7 +7,7 @@
 }
 
 
-.fa-angle-left{
+legend .material-icons:nth-of-type(1){
     text-align: left !important;
     cursor: pointer;
 }
@@ -16,13 +16,17 @@
     text-align: center !important;
 }
 
-.fa-angle-right{
+legend .material-icons:nth-of-type(3){
     text-align: right !important;
     cursor: pointer;
 }
 
+#mes{
+    margin: 0px;
+    padding: 0px;
+}
 
-.fa-angle-right:hover, .fa-angle-left:hover{
+legend .material-icons:hover{
     background-color: rgb(185, 185, 185);
 }
 
@@ -38,9 +42,13 @@ td:hover p{
     border-radius: 50%;
     text-align: center;
     background-color: green;
-    display: inline-block;
 }
 
 .hoy{
     background-color: rgb(201, 201, 201) !important;
+}
+
+
+.material-icons-evento, .numDia{
+    cursor: pointer;
 }

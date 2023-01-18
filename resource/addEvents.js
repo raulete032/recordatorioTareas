@@ -1,5 +1,5 @@
 
-var filtros= document.querySelectorAll('li[data-filter');
+const btnGuardarEvento= document.getElementById('guardarEvento');
 
-for(let i=0;i<filtros.length;i++)
-    filtros[i].addEventListener('click', filtroProyectos);
+if(btnGuardarEvento!=null)
+    btnGuardarEvento.addEventListener('click', guardarEvento);

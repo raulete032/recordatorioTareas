@@ -542,13 +542,16 @@ function generaMesCalendario(fecha){
 
     let sw=true;
     for(let i=0;i<42 && sw;i++){ //como máximo dará 42 vueltas
-        tds[i].setAttribute("data-bs-toggle", "modal");
-        tds[i].setAttribute("data-bs-target", "#eventoModal");
+        // tds[i].setAttribute("data-bs-toggle", "modal");
+        // tds[i].setAttribute("data-bs-target", "#eventoModal");
 
         if(primerDiaMesSemana==i){
 
             let dia= fecha1Mes.getDate();
             dia= creaNodo("p", dia);
+            dia.className="numDia";
+            dia.setAttribute("data-bs-toggle", "modal");
+            dia.setAttribute("data-bs-target", "#eventoModal");
             tds[i-1].appendChild(dia);
 
             let hoy= new Date();

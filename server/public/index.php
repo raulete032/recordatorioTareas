@@ -14,6 +14,8 @@ switch($recibido->controlador){
         break;
     case "Token": $controller= new TokenController($recibido->metodo, $db, "POST");
         break;
+    case "Eventos": $controller= new EventosController($recibido->metodo, $db, "POST");
+        break;
 }
 
 
