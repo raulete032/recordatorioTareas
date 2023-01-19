@@ -73,19 +73,30 @@
       <!-- Menú lateral -->
       <div class="offcanvas offcanvas-start w-5" tabindex="-1" id="offcanvas" data-bs-keyboard="false" data-bs-backdrop="false">
         <div class="offcanvas-header">
-            <h6 class="offcanvas-title d-none d-sm-block" id="offcanvas">Datos del evento</h6>
+            <h6 class="offcanvas-title d-none d-sm-block" id="offcanvas">Datos del evento
+              <span id="nombreEventoCabecera"></span>
+              <span id="iconoEventoInfo" class="material-icons"></span>
+            </h6>
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body px-0">
-            
+            <div class="row">
+              <div class="col-12 ms-5">
+                <p id="nombreEvento"></p>
+              </div>
+              <div class="col-12 ms-3" style="width: 90%; text-align: justify;">
+                <p id="descripcionEvento"></p>
+              </div>
+              <div class="col-12 ms-3">
+                <p id="fechaInicioEvento"></p>
+                <p id="fechaFinEvento"></p>
+              </div>
+            </div>
         </div>
       </div>
-
-
-    
+          
     <script src="../resource/libreria.js"></script>
     <script src="../resource/apiRest.js"></script>
-    <script src="../js/eventosCalendario.js"></script>
     <script src="../js/calendario.js"></script>    
     <script src="../resource/addEvents.js"></script>
 

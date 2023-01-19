@@ -31,7 +31,9 @@ class EventosController{
                     case "dameEventos":
                         $response= $this->dameEventos($input);
                         break;
-
+                    case "infoEvento":
+                        $response= $this->infoEvento($input);
+                        break;
                 }
                 break;
             default:
@@ -47,15 +49,17 @@ class EventosController{
     }
 
 
-
+    /**
+     * Función que pide TODOS los eventos de ese usuario de ese mes
+     */
     function dameEventos($input){
 
         $where="";
-        if (isset($input['limiteSuperior']) && isset($input['limiteInferior'])) {
+        if (isset($input['limiteSuperior']) && isset($input['limiteInferior']) && isset($input['idNick'])) {
             // $where= " fecha_inicio >= '" . $input['limiteSuperior'] . "' OR " .
             // "fecha_fin <= '" . $input['limiteInferior'] . "';";
-            $where= " fecha_inicio BETWEEN '" . $input['limiteSuperior'] . "' AND '" . $input['limiteInferior'] . "' OR 
-                      fecha_fin BETWEEN '" . $input['limiteSuperior'] . "' AND '" . $input['limiteInferior'] ."';"; 
+            $where= " (fecha_inicio BETWEEN '" . $input['limiteSuperior'] . "' AND '" . $input['limiteInferior'] . "' OR 
+                      fecha_fin BETWEEN '" . $input['limiteSuperior'] . "' AND '" . $input['limiteInferior'] ."') AND id_nick= " . $input['idNick'] . ";"; 
 
             $ADOEventos= new Eventos();
             $eventos= $ADOEventos->dameEventos($where);
@@ -73,6 +77,29 @@ class EventosController{
     }
 
 
+    /**
+     * Función que devuelve la información de un evento en concerto
+     */
+    function infoEvento($input){
+
+        $where="";
+        if(isset($input['idEvento'])){
+            $where= " id_evento = " . $input['idEvento'] . ";";
+
+            $ADOEventos= new Eventos();
+            $infoEvento= $ADOEventos->infoEvento($where);
+
+            if(count($infoEvento)>=0)
+                $this->oRes->devolucionResultado(1, "OK", "", $infoEvento);
+            else
+                $this->oRes->devolucionResultado(2, "KO", "Error al obtener los datos");
+        }
+        else
+            $this->oRes->devolucionResultado(2, "KO", "Error al recibir los datos");
+        
+        return $this->oRes->okResponse();
+
+    }
 
 
 

@@ -581,3 +581,22 @@ function generaMesCalendario(fecha){
 }
 
 
+
+/**
+ * Función que recibe una timestamp en formato SQL aaaa-mm-dd hh:mm:ss
+ * y devuelve una fecha en un formato dd-mm-aaaa
+ * @param {*} fecha -> La fecha en formato SQL
+ * @returns -> La fecha en fomrato dd-mm-aaaa
+ */
+function formateaFecha(fecha){
+
+    let parteFecha= fecha.split(" ")[0];
+
+    let dia= parteFecha.split("-")[2];
+    let mes= parteFecha.split("-")[1];
+    let ano= parteFecha.split("-")[0];    
+
+    return dia+"-"+mes+"-"+ano;
+
+
+}
