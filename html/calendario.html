@@ -60,6 +60,39 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+              <div class="row">
+                <p id="formErroresAdd"></p>
+                <div class="col-12">
+                  <select class="form-select mb-3" id="formSelectTipoEventoAdd">
+                    <option value="0" selected>Selecciona el tipo de evento</option>                
+                  </select>
+                </div>
+                <div class="col-12">
+                  <div class="input-group input-group-sm mb-3">
+                    <span class="input-group-text">Nombre evento</span>
+                    <input type="text" class="form-control" id="formNombreEventoAdd">
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="form-group mb-3">
+                    <label for="exampleFormControlTextarea1">Descripción del evento</label>
+                    <textarea class="form-control" id="formDescripEventoAdd" rows="3"></textarea>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="input-group input-group-sm mb-3">
+                    <span class="input-group-text">Fecha inicio</span>
+                    <input type="date" class="form-control" id="formFechaIniAdd">
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="input-group input-group-sm mb-3">
+                    <span class="input-group-text">Fecha fin</span>
+                    <input type="date" class="form-control" id="formFechaFinAdd">
+                  </div>
+                </div>
+              </div>
+              
               
             </div>
             <div class="modal-footer">
@@ -90,6 +123,9 @@
               <div class="col-12 ms-3">
                 <p id="fechaInicioEvento"></p>
                 <p id="fechaFinEvento"></p>
+              </div>
+              <div class="col">
+                <button class="btn btn-danger ms-3" id="btnEliminarEvento">Eliminar evento</button>
               </div>
             </div>
         </div>

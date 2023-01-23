@@ -119,9 +119,9 @@ function anadeEvento(){
 
     let modalBody= document.getElementsByClassName('modal-body')[0];
     document.getElementById("guardarEvento").style.display="none";
-
+    
     if(hoy<=fechaPulsada){ //solo se podrán añadir eventos en el FUTURO
-        modalBody.innerHTML= "AÑADE EVENTO";
+        formularioAnadirEvento(diaPulsado, (mesPulsado+1), anoPulsado);
         document.getElementById("guardarEvento").style.display="block";
     }
     else{
@@ -130,10 +130,92 @@ function anadeEvento(){
 }
 
 
+/**
+ * Función que dibuja el formulario para añadir un evento
+ */
+function formularioAnadirEvento(dia, mes, ano){    
+    document.getElementById("formErroresAdd").innerHTML="";
+    let obj={
+            controlador: "TiposEventos",
+            metodo: "dameTiposEventos"
+    };
+
+    llamada_fetch(obj, "POST", headers)
+        .then(function(data){
+            let datos= data.datos.oResultado;    
+
+            if(mes<=9)
+                mes="0"+mes;
+            if(dia<=9)
+                dia="0"+dia;
+
+            let limite= ano+"-"+mes+"-"+dia;
+
+            document.getElementById("formFechaIniAdd").setAttribute("value", limite);
+            document.getElementById("formFechaIniAdd").setAttribute("min", limite);
+            document.getElementById("formFechaIniAdd").setAttribute("max", limite);
+            document.getElementById("formFechaFinAdd").setAttribute("min", limite);
+            let select= document.getElementById("formSelectTipoEventoAdd");
+
+            for(let i=0;i<datos.length;i++){
+                let opt= creaNodo("option", datos[i].nombre);
+                    opt.value= datos[i].id_tipo_evento;
+                select.appendChild(opt);
+            }
+        })
+}
+
+
 
 function guardarEvento(){
+    document.getElementById("formErroresAdd").innerHTML="";
+    let errores="";
 
-    location.reload();
+    let tipoEvento= document.getElementById("formSelectTipoEventoAdd").selectedOptions[0].value;
+    let nombreEvento= document.getElementById("formNombreEventoAdd").value;
+    let descripcionEvento= document.getElementById("formDescripEventoAdd").value;
+    let fechaInicioEvento= document.getElementById("formFechaIniAdd").value;
+    let fechaFinEvento= document.getElementById("formFechaFinAdd").value;
+
+    if(tipoEvento==0)
+        errores+= "Debes seleccionar el tipo de evento <br>";
+    if(nombreEvento=="")
+        errores+= "Debes indicar el nombre del evento <br>";
+    if(descripcionEvento=="")
+        errores+= "Debes indicar una breve descripción del evento <br>";
+    if(fechaFinEvento=="")
+        errores+= "Debes indicar una fecha de fin <br>";
+
+    if(errores==""){
+        let idNick= parseInt(dameCookie("sesion"));
+        obj={
+            controlador: "Eventos",
+            metodo: "anadeEvento",
+            idTipoEvento: tipoEvento,
+            idNick: idNick,
+            nombre: nombreEvento,
+            descripcion: descripcionEvento,
+            fechaInicio: fechaInicioEvento,
+            fechaFin: fechaFinEvento
+        }
+
+        llamada_fetch(obj, "POST", headers)
+            .then(function(data){
+                if(data.datos.sResultado=="OK")
+                    location.reload();
+            })
+            .catch(function(er){
+                console.log("ERROR: " + er);
+            })
+        
+    }
+    else{
+        document.getElementById("formErroresAdd").innerHTML= errores;
+    }
+
+
+
+    
 }
 
 
@@ -179,6 +261,7 @@ function muestraInfoMenuLateral(datos){
     document.getElementById("fechaFinEvento").innerHTML= "Fecha fin: " + fechaFin;
     document.getElementById("nombreEventoCabecera").innerHTML= "("+ nombreTipoEvento +")"
     document.getElementById("iconoEventoInfo").innerHTML= logoEvento[tipoEvento];
+    document.getElementById("btnEliminarEvento").setAttribute("data-idEvento", datos.id_evento);
 
 
 }
@@ -197,7 +280,8 @@ logoEvento={
     1: "cake",
     2: "groups",
     3: "flight",
-    4: "beach_access"
+    4: "beach_access",
+    5: "question_mark"
 };
 
 
@@ -322,3 +406,23 @@ function pintaEvento(parent, evento){
 }
 
 
+function elimiarEvento(){
+
+    let idEvento= this.dataset.idevento;
+
+    let obj={
+            controlador: "Eventos",
+            metodo: "eliminarEvento",
+            idEvento: idEvento
+    }
+
+    llamada_fetch(obj, "POST", headers)
+        .then(function(data){
+            if(data.datos.sResultado=="OK")
+                location.reload();
+        })
+        .catch(function(er){
+            console.log("ERROR: " + er);
+        })
+
+}

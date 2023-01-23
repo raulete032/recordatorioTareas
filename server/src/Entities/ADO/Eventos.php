@@ -57,4 +57,51 @@ class Eventos{
     }
 
 
+
+    function anadeEvento(){
+        $id=0;
+        $sql= "INSERT INTO `eventos`(`id_nick`, `id_tipo_evento`, `nombre`, `descripcion`, `fecha_inicio`, `fecha_fin`)
+                VALUES (" . mysqli_escape_string($this->db, $this->modelo->idNick) . ", " . 
+                            mysqli_escape_string($this->db, $this->modelo->idTipoEvento) . ", '" . 
+                            mysqli_escape_string($this->db, $this->modelo->nombre) . "', '" . 
+                            mysqli_escape_string($this->db, $this->modelo->descripcion) . "', '" . 
+                            mysqli_escape_string($this->db, $this->modelo->fechaInicio) . "', '" .
+                            mysqli_escape_string($this->db, $this->modelo->fechaFin) . "');";
+
+        $insert= mysqli_query($this->db, $sql);
+        if($insert)
+            $id= mysqli_insert_id($this->db);
+
+        return $id;
+    }
+
+
+
+    function eliminarEvento($where){
+
+        $sql= "DELETE FROM `eventos` 
+            WHERE " . $where;
+
+        $delete= mysqli_query($this->db, $sql);
+
+        return $delete;
+    }
+
+
+
+
+
+    
+    /**
+     * Función que carga los datos en el modelo
+     */
+    function cargarDatos($datos){
+
+        foreach($datos as $key => $valor){
+            if(isset($this->modelo->$key))
+                $this->modelo->$key= $valor;
+        }
+    }
+
+
 }

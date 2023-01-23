@@ -16,6 +16,8 @@ switch($recibido->controlador){
         break;
     case "Eventos": $controller= new EventosController($recibido->metodo, $db, "POST");
         break;
+    case "TiposEventos": $controller= new TiposEventosController($recibido->metodo, $db, "POST");
+        break;
 }
 
 

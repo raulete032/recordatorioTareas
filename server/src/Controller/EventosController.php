@@ -34,6 +34,12 @@ class EventosController{
                     case "infoEvento":
                         $response= $this->infoEvento($input);
                         break;
+                    case "anadeEvento":
+                        $response= $this->anadeEvento($input);
+                        break;
+                    case "eliminarEvento":
+                        $response= $this->eliminarEvento($input);
+                        break;
                 }
                 break;
             default:
@@ -59,7 +65,9 @@ class EventosController{
             // $where= " fecha_inicio >= '" . $input['limiteSuperior'] . "' OR " .
             // "fecha_fin <= '" . $input['limiteInferior'] . "';";
             $where= " (fecha_inicio BETWEEN '" . $input['limiteSuperior'] . "' AND '" . $input['limiteInferior'] . "' OR 
-                      fecha_fin BETWEEN '" . $input['limiteSuperior'] . "' AND '" . $input['limiteInferior'] ."') AND id_nick= " . $input['idNick'] . ";"; 
+                      fecha_fin BETWEEN '" . $input['limiteSuperior'] . "' AND '" . $input['limiteInferior'] ."')" .
+                      " OR (('" . $input['limiteSuperior'] . "' BETWEEN fecha_inicio AND fecha_fin) AND ('" . $input['limiteInferior'] . "' BETWEEN fecha_inicio AND fecha_fin))" .
+                      "AND id_nick= " . $input['idNick'] . ";"; 
 
             $ADOEventos= new Eventos();
             $eventos= $ADOEventos->dameEventos($where);
@@ -101,7 +109,56 @@ class EventosController{
 
     }
 
+    function anadeEvento($input){
 
+        if( isset($input["idTipoEvento"]) && 
+            is_numeric($input["idTipoEvento"]) &&
+            isset($input["idNick"]) &&
+            is_numeric($input["idNick"]) &&
+            isset($input["nombre"]) &&
+            isset($input["descripcion"]) &&
+            isset($input["fechaInicio"]) &&
+            isset($input["fechaFin"])){
+
+            $ADOEventos= new Eventos();
+
+            $ADOEventos->cargarDatos($input);
+            
+            $evento= $ADOEventos->anadeEvento();
+
+            if($evento!=0)
+                $this->oRes->devolucionResultado(1, "OK", "", $evento);
+            else
+                $this->oRes->devolucionResultado(2, "KO", "Error al registrar el evento");
+        
+            return $this->oRes->okResponse();
+        }
+    }
+
+
+    function eliminarEvento($input){
+
+        $where="";
+        if(isset($input["idEvento"])){
+            $where= " id_evento = " . $input["idEvento"] . ";";
+
+            $ADOEventos= new Eventos();
+
+            $eliminado= $ADOEventos->eliminarEvento($where);
+
+            if($eliminado)
+                $this->oRes->devolucionResultado(1, "OK", "Evento eliminado");
+            else
+                $this->oRes->devolucionResultado(1, "KO", "No se pudo eliminar el evento");
+
+        }
+        else
+            $this->oRes->devolucionResultado(2, "KO", "Error al recibir los datos");
+
+        return $this->oRes->okResponse();
+
+
+    }
 
 
 }

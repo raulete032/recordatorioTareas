@@ -5,3 +5,4 @@ if(btnGuardarEvento!=null)
     btnGuardarEvento.addEventListener('click', guardarEvento);
 
 
+document.getElementById('btnEliminarEvento').addEventListener('click', elimiarEvento);
